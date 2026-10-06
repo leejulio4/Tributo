@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para o meu Princeso ❤️</title>
+    <!-- Tailwind CSS for modern responsive utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for romantic typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+        }
+        .romantic-font {
+            font-family: 'Great Vibes', cursive;
+        }
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.8),
+                         0 0 20px rgba(255, 0, 60, 0.6),
+                         0 0 30px rgba(255, 0, 60, 0.4),
+                         0 0 40px rgba(255, 0, 60, 0.2);
+        }
+        .glow-box {
+            box-shadow: 0 0 25px rgba(255, 0, 60, 0.3);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen relative select-none overflow-hidden">
+
+    <div id="particles" class="absolute inset-0 pointer-events-none z-0"></div>
+
+    <!-- Main Content Container -->
+    <div class="relative z-10 flex flex-col items-center justify-between w-full h-full py-8 px-4">
+        
+        <!-- Top Spacer for balance -->
+        <div class="w-full h-8"></div>
+
+        <!-- Center Glowing Red Text (Positioned nicely above/inside center) -->
+        <div class="z-20 flex flex-col items-center animate-pulse pointer-events-auto my-auto">
+            <h1 class="romantic-font text-5xl sm:text-7xl md:text-8xl text-red-500 glow-red tracking-wide text-center">
+                Te Amo!
+            </h1>
+            <p class="text-xs sm:text-sm md:text-base tracking-[0.25em] text-neutral-400 mt-1 uppercase font-semibold">
+                Meu Princeso
+            </p>
+        </div>
+
+        <!-- Interactive Controls (Button at bottom) -->
+        <div class="z-20 flex flex-col items-center pointer-events-auto pb-4">
+            <button id="surpriseBtn" class="bg-red-600/90 hover:bg-red-600 text-white text-sm sm:text-base font-medium px-6 py-3 rounded-full glow-box transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-red-500/50">
+                Mais um Pouco de Amor 💖
+            </button>
+        </div>
+    </div>
+
+    <!-- Canvas Container positioned behind content -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+        <canvas id="heartCanvas" class="w-full h-full"></canvas>
+    </div>
+
+    <!-- Modal Message Box (Custom alert replacement) -->
+    <div id="loveModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-neutral-900 border border-red-500/30 p-6 sm:p-8 rounded-2xl max-w-sm mx-4 text-center glow-box transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="text-4xl mb-3">👑❤</div>
+            <h3 class="romantic-font text-3xl text-red-500 mb-2">Para o homem da minha vida</h3>
+            <p id="modalText" class="text-neutral-300 text-sm sm:text-base mb-6 leading-relaxed">
+                Você é a melhor coisa que já aconteceu em meu mundo. Obrigado por ser meu princeso!
+            </p>
+            <button id="closeModal" class="bg-red-600 hover:bg-red-500 text-white font-medium px-5 py-2 rounded-full text-sm transition-colors cursor-pointer">
+                Com todo meu amor
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement('div');
+                p.className = 'absolute rounded-full bg-red-500/20 animate-ping';
+                const size = Math.random() * 3 + 2;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.left = `${Math.random() * 100}%`;
+                p.style.top = `${Math.random() * 100}%`;
+                p.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                p.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(p);
+            }
+        }
+
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Optimized heart parametric formula tailored for vertical mobile screens and desktop screens alike
+        function getHeartPoint(t) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const isMobile = width < 768;
+
+            // Standard parametric heart equations
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+            // Adjust scale and proportions based on orientation and screen size
+            let scaleX, scaleY;
+            if (isMobile) {
+                // Portrait mode: Make the heart wider and shorter vertically to prevent top/bottom crowding
+                scaleX = Math.min(width, height) / 24;
+                scaleY = Math.min(width, height) / 26;
+            } else {
+                // Landscape / Desktop mode
+                scaleX = Math.min(width, height) / 30;
+                scaleY = Math.min(width, height) / 30;
+            }
+
+            return {
+                x: width / 2 + x * scaleX,
+                y: height / 2 + y * scaleY
+            };
+        }
+
+        // Clean spaced word string to prevent overlapping
+        const word = "princeso   •   ";
+        const totalPoints = 32; // Reduced point count for generous word spacing without crowding
+        let progress = 0; // Animation progress from 0 to 1
+
+        function drawHeartWords() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            
+            const isMobile = window.innerWidth < 768;
+            const fontSize = isMobile ? '11px' : '13px';
+            ctx.font = `bold ${fontSize} Montserrat, sans-serif`;
+            ctx.fillStyle = 'rgba(255, 0, 60, 0.9)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Draw progressively based on progress value
+            const currentCount = Math.floor(totalPoints * progress);
+
+            for (let i = 0; i <= currentCount; i++) {
+                const t = (i / totalPoints) * Math.PI * 2;
+                const pt = getHeartPoint(t);
+                
+                // Calculate tangent rotation for smooth alignment along the curve
+                const nextT = ((i + 1) / totalPoints) * Math.PI * 2;
+                const nextPt = getHeartPoint(nextT);
+                const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x);
+
+                ctx.save();
+                ctx.translate(pt.x, pt.y);
+                ctx.rotate(angle);
+                ctx.shadowColor = 'rgba(255, 0, 60, 0.7)';
+                ctx.shadowBlur = 8;
+                ctx.fillText(word, 0, 0);
+                ctx.restore();
+            }
+        }
+
+        function animateHeart() {
+            if (progress < 1) {
+                progress += 0.012; // Smooth drawing speed
+                if (progress > 1) progress = 1;
+            }
+            drawHeartWords();
+            requestAnimationFrame(animateHeart);
+        }
+
+        const loveMessages = [
+            "Você é o meu refúgio favorito e o meu sorriso mais sincero. Te amo, princeso! 👑",
+            "Cada batida do meu coração tem o seu nome gravado. Meu princeso lindo! 💖",
+            "Seu abraço é o melhor lugar do mundo inteiro. Te amo demais! ✨",
+            "Meu dia fica infinitamente mais feliz só porque você existe na minha vida. 🌹"
+        ];
+
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const loveModal = document.getElementById('loveModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        const modalText = document.getElementById('modalText');
+
+        surpriseBtn.addEventListener('click', () => {
+            const randomMsg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+            modalText.textContent = randomMsg;
+            loveModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        });
+
+        closeModal.addEventListener('click', () => {
+            loveModal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+        });
+
+        loveModal.addEventListener('click', (e) => {
+            if (e.target === loveModal) {
+                closeModal.click();
+            }
+        });
+
+        // Initialize background particles and heart animation on window load
+        window.onload = function() {
+            createParticles();
+            animateHeart();
+        };
+    </script>
+</body>
+</html>
